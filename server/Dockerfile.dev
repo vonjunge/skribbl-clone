@@ -1,0 +1,22 @@
+# Server Development Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy shared folder
+COPY shared ./shared
+
+# Copy server package files
+COPY server/package*.json ./server/
+
+# Install all dependencies (including dev dependencies)
+WORKDIR /app/server
+RUN npm install
+
+# Copy server source code
+COPY server/ .
+
+EXPOSE 3002
+
+# Start in development mode with hot reloading
+CMD ["npm", "run", "dev"]

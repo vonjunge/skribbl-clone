@@ -1,0 +1,198 @@
+.lobby {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.lobby-card {
+  background: linear-gradient(135deg, #ffffff 0%, #fff8f0 100%);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 3px solid #FFD700;
+  position: relative;
+}
+
+.lobby-card::before {
+  content: "🎄";
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: 2rem;
+}
+
+.lobby-card::after {
+  content: "🎄";
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 2rem;
+}
+
+.lobby-title {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #c41e3a 0%, #165b33 50%, #FFD700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lobby-subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.mode-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f0f0f0;
+  color: #666;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.mode-btn.active {
+  background: linear-gradient(135deg, #c41e3a 0%, #165b33 100%);
+  color: white;
+  border: 2px solid #FFD700;
+}
+
+.lobby-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  font-size: 1rem;
+}
+
+.error-message {
+  background: #fee;
+  color: #c33;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.submit-btn {
+  padding: 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #c41e3a 0%, #165b33 100%);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 10px;
+  border: 2px solid #FFD700;
+  position: relative;
+}
+
+.submit-btn::before {
+  content: "🎁";
+  margin-right: 8px;
+}
+
+.lobby-info {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lobby-info p {
+  color: #666;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.slider::-webkit-slider-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #667eea, #764ba2);
+}
+
+.slider::-moz-range-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #667eea, #764ba2);
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid #667eea;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid #667eea;
+  cursor: pointer;
+  border: none;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.config-hint {
+  margin-top: 5px;
+  font-size: 0.85rem;
+  color: #667eea;
+  text-align: center;
+  font-style: italic;
+}

@@ -1,0 +1,29 @@
+{
+  "name": "skribbl-clone",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Multiplayer drawing and guessing game supporting up to 36 concurrent players",
+  "main": "index.js",
+  "scripts": {
+    "setup": "cd server && npm install && cd ../client && npm install",
+    "server": "cd server && npm start",
+    "client": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "test": "echo \"Run tests for individual packages\" && exit 1"
+  },
+  "keywords": [
+    "game",
+    "multiplayer",
+    "drawing",
+    "guessing",
+    "skribbl",
+    "websocket",
+    "real-time"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/skribbl-clone"
+  }
+}

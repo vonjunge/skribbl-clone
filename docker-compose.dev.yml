@@ -1,0 +1,48 @@
+# Development Docker Compose - includes hot reloading
+services:
+  # Backend Server (Development)
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile.dev
+    container_name: skribbl-server-dev
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - NODE_ENV=development
+    volumes:
+      # Mount source code for hot reloading
+      - ./server/src:/app/src:ro
+      - ./shared:/app/shared:ro
+    restart: unless-stopped
+    networks:
+      - skribbl-network
+    command: npm run dev
+
+  # Frontend Client (Development)
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    container_name: skribbl-client-dev
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_SERVER_URL=http://localhost:3002
+    volumes:
+      # Mount source code for hot reloading
+      - ./client/src:/app/src:ro
+      - ./client/index.html:/app/index.html:ro
+      - ./client/vite.config.js:/app/vite.config.js:ro
+      - ./shared:/app/shared:ro
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - skribbl-network
+    command: npm run dev
+
+networks:
+  skribbl-network:
+    driver: bridge
