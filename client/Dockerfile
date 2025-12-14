@@ -14,7 +14,7 @@ RUN npm ci
 COPY . .
 
 # Build argument for API URL
-ARG VITE_SERVER_URL=http://localhost:3002
+ARG VITE_SERVER_URL=https://game2srv.dejongs.de
 ENV VITE_SERVER_URL=$VITE_SERVER_URL
 
 # Build the application
