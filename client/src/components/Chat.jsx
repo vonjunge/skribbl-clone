@@ -30,6 +30,11 @@ function Chat({ messages, onSendGuess, isDrawer, currentWord }) {
       </div>
 
       <div className="chat-messages">
+        {/* 
+          Security Note: Messages are rendered directly from server.
+          Server MUST sanitize all chat messages to prevent XSS attacks.
+          Never trust user input - server-side validation is critical.
+        */}
         {messages.map((msg, index) => (
           <div
             key={index}

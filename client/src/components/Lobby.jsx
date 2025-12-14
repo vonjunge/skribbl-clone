@@ -7,21 +7,36 @@ function Lobby({ onCreateRoom, onJoinRoom, error }) {
   const [mode, setMode] = useState('create'); // 'create' or 'join'
   const [roundTime, setRoundTime] = useState(80); // seconds
   const [totalRounds, setTotalRounds] = useState(3); // total number of turns
+  const [validationError, setValidationError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     
     if (!playerName.trim()) {
+      setValidationError('Please enter your name');
       return;
     }
 
     if (mode === 'create') {
+      setValidationError('');
       onCreateRoom(playerName.trim(), roundTime, totalRounds);
     } else {
       if (!roomIdInput.trim()) {
+        setValidationError('Please enter a room code');
         return;
       }
-      onJoinRoom(roomIdInput.trim().toUpperCase(), playerName.trim());
+      // Validate room code format (6 characters, alphanumeric)
+      const roomCode = roomIdInput.trim().toUpperCase();
+      if (roomCode.length !== 6) {
+        setValidationError('Room code must be 6 characters');
+        return;
+      }
+      if (!/^[A-Z0-9]{6}$/.test(roomCode)) {
+        setValidationError('Room code must contain only letters and numbers');
+        return;
+      }
+      setValidationError('');
+      onJoinRoom(roomCode, playerName.trim());
     }
   };
 
@@ -34,13 +49,13 @@ function Lobby({ onCreateRoom, onJoinRoom, error }) {
         <div className="mode-selector">
           <button
             className={`mode-btn ${mode === 'create' ? 'active' : ''}`}
-            onClick={() => setMode('create')}
+            onClick={() => { setMode('create'); setValidationError(''); }}
           >
             Create Room
           </button>
           <button
             className={`mode-btn ${mode === 'join' ? 'active' : ''}`}
-            onClick={() => setMode('join')}
+            onClick={() => { setMode('join'); setValidationError(''); }}
           >
             Join Room
           </button>
@@ -115,9 +130,9 @@ function Lobby({ onCreateRoom, onJoinRoom, error }) {
             </>
           )}
 
-          {error && (
+          {(error || validationError) && (
             <div className="error-message">
-              ⚠️ {error}
+              ⚠️ {validationError || error}
             </div>
           )}
 

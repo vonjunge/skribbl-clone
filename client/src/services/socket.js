@@ -9,8 +9,15 @@ class SocketService {
   }
 
   connect() {
+    // Prevent duplicate connections (e.g., React StrictMode in development)
     if (this.socket?.connected) {
+      console.log('✅ Already connected to server');
       return this.socket;
+    }
+
+    // Disconnect existing socket if present but not connected
+    if (this.socket && !this.socket.connected) {
+      this.socket.disconnect();
     }
 
     this.socket = io(SERVER_URL, {
@@ -43,34 +50,44 @@ class SocketService {
   }
 
   emit(event, data) {
-    if (this.socket) {
-      this.socket.emit(event, data);
+    if (!this.socket) {
+      console.warn(`[Socket] Cannot emit '${event}': socket not initialized`);
+      return;
     }
+    if (!this.socket.connected) {
+      console.warn(`[Socket] Cannot emit '${event}': socket not connected`);
+      return;
+    }
+    this.socket.emit(event, data);
   }
 
   on(event, callback) {
-    if (this.socket) {
-      this.socket.on(event, callback);
-      
-      // Store listener for cleanup
-      if (!this.listeners.has(event)) {
-        this.listeners.set(event, []);
-      }
-      this.listeners.get(event).push(callback);
+    if (!this.socket) {
+      console.warn(`[Socket] Cannot register listener for '${event}': socket not initialized`);
+      return;
     }
+    this.socket.on(event, callback);
+    
+    // Store listener for cleanup
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, []);
+    }
+    this.listeners.get(event).push(callback);
   }
 
   off(event, callback) {
-    if (this.socket) {
-      this.socket.off(event, callback);
-      
-      // Remove from stored listeners
-      if (this.listeners.has(event)) {
-        const callbacks = this.listeners.get(event);
-        const index = callbacks.indexOf(callback);
-        if (index > -1) {
-          callbacks.splice(index, 1);
-        }
+    if (!this.socket) {
+      console.warn(`[Socket] Cannot remove listener for '${event}': socket not initialized`);
+      return;
+    }
+    this.socket.off(event, callback);
+    
+    // Remove from stored listeners
+    if (this.listeners.has(event)) {
+      const callbacks = this.listeners.get(event);
+      const index = callbacks.indexOf(callback);
+      if (index > -1) {
+        callbacks.splice(index, 1);
       }
     }
   }

@@ -74,7 +74,7 @@ export const DRAWING_TOOLS = {
 
 export const BRUSH_SIZES = {
   MIN: 1,
-  MAX: 100,
+  MAX: 50,
   DEFAULT: 5
 };
 

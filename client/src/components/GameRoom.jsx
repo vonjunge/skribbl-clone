@@ -192,7 +192,7 @@ function GameRoom({ roomId, currentPlayer, isHost: initialIsHost, initialGameSta
       socketService.off(SOCKET_EVENTS.CORRECT_GUESS, handleCorrectGuess);
       socketService.off(SOCKET_EVENTS.CLOSE_GUESS, handleCloseGuess);
     };
-  }, [currentPlayer]);
+  }, [currentPlayer?.socketId]);
 
   const handleStartGame = () => {
     socketService.emit(SOCKET_EVENTS.START_GAME);

@@ -11,6 +11,13 @@ services:
     environment:
       - PORT=3002
       - NODE_ENV=development
+      # Word lists for the game (comma-separated)
+      # CATEGORY 1: Power BI themed words
+      - POWERBI_WORDS=Dashboard,Report,Data Model,DAX,Table,Matrix,Slicer,Visual,KPI,Measure,Semantic Model,Power Query,Dataflow,Fabric,Lakehouse,Star Schema,Column,Row-Level Security,Refresh,Filter,Bookmark,Tooltip,Card Visual,Drillthrough,DirectQuery,Pagination,Line Chart,Scatter Plot,Broken Refresh,Spinning Loading Wheel
+      # CATEGORY 2: Christmas themed words
+      - CHRISTMAS_WORDS=Santa,Reindeer,Snowman,Elf,Christmas Tree,Ornament,Candy Cane,Stocking,Fireplace,Gift,Sleigh,Snowflake,Chimney,Hot Chocolate,Mistletoe,Gingerbread,Carols,Star,North Pole,Christmas Lights,Wreath,Bell,Nutcracker,Santa Hat,Grinch,Ugly Sweater,Cookies,Snowball,Christmas Miracle,Overcooked Turkey
+      # CATEGORY 3: Die Hard themed words
+      - DIEHARD_WORDS=Tower,Gun,Walkie-Talkie,Police,Glass,Explosion,Roof,Elevator,Truck,Car,Window,Door,Money,Hostage,Badge,Fire,Tape,Radio,Plane,Shirt,Building,Key,Phone,Ladder,Box,Tie,Suit,Floor,Bag,Air vent
     volumes:
       # Mount source code for hot reloading
       - ./server/src:/app/src:ro

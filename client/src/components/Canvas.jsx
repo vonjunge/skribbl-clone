@@ -31,6 +31,48 @@ function Canvas({ isDrawer, onDraw, onClear, onUndo, drawingHistory, currentSegm
     context.fillRect(0, 0, canvas.width, canvas.height);
     
     contextRef.current = context;
+
+    // Handle window resize with debouncing
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (canvas && container) {
+          const oldWidth = canvas.width;
+          const oldHeight = canvas.height;
+          
+          // Save current drawing
+          const imageData = context.getImageData(0, 0, oldWidth, oldHeight);
+          
+          // Resize canvas
+          canvas.width = container.clientWidth;
+          canvas.height = container.clientHeight;
+          
+          // Restore context settings
+          context.lineCap = 'round';
+          context.lineJoin = 'round';
+          context.fillStyle = 'white';
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          
+          // Scale and restore drawing
+          const scaleX = canvas.width / oldWidth;
+          const scaleY = canvas.height / oldHeight;
+          context.scale(scaleX, scaleY);
+          context.putImageData(imageData, 0, 0);
+          context.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+          
+          // Redraw from history for better quality
+          redrawCanvas();
+        }
+      }, 250);
+    };
+
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimeout);
+    };
   }, []);
 
   // Show popup briefly when becoming a guesser
@@ -328,8 +370,8 @@ function Canvas({ isDrawer, onDraw, onClear, onUndo, drawingHistory, currentSegm
     // If same color, don't fill
     if (startR === fillR && startG === fillG && startB === fillB) return;
     
-    // Use extremely high tolerance to eliminate all anti-aliased edge pixels
-    const tolerance = 200;
+    // Use optimized tolerance to balance edge filling and performance
+    const tolerance = 50;
     const matchesColor = (r, g, b, a) => {
       // Check if pixel is similar to start color
       const colorMatch = Math.abs(r - startR) <= tolerance &&
@@ -399,8 +441,8 @@ function Canvas({ isDrawer, onDraw, onClear, onUndo, drawingHistory, currentSegm
     }
     
     // Post-processing: Multiple passes to fill any remaining edge pixels
-    // Run up to 5 passes to ensure even the most stubborn anti-aliased pixels are filled
-    for (let pass = 0; pass < 5; pass++) {
+    // Run up to 2 passes to ensure anti-aliased pixels are filled while maintaining performance
+    for (let pass = 0; pass < 2; pass++) {
       let foundNew = false;
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -475,6 +517,15 @@ function Canvas({ isDrawer, onDraw, onClear, onUndo, drawingHistory, currentSegm
         <canvas
           ref={canvasRef}
           className="drawing-canvas"
+          style={{
+            cursor: isDrawer 
+              ? selectedTool === DRAWING_TOOLS.BUCKET 
+                ? 'pointer' 
+                : selectedTool === DRAWING_TOOLS.ERASER 
+                  ? 'grab' 
+                  : 'crosshair'
+              : 'default'
+          }}
           onMouseDown={startDrawing}
           onMouseMove={handleMouseMove}
           onMouseUp={stopDrawing}
@@ -556,8 +607,8 @@ function Canvas({ isDrawer, onDraw, onClear, onUndo, drawingHistory, currentSegm
                 style={{ backgroundColor: color }}
                 onClick={() => {
                   setSelectedColor(color);
-                  // Only switch to brush if eraser is currently selected
-                  if (selectedTool === DRAWING_TOOLS.ERASER) {
+                  // Switch to pencil if eraser or bucket is currently selected
+                  if (selectedTool === DRAWING_TOOLS.ERASER || selectedTool === DRAWING_TOOLS.BUCKET) {
                     setSelectedTool(DRAWING_TOOLS.PENCIL);
                   }
                 }}
@@ -570,8 +621,8 @@ function Canvas({ isDrawer, onDraw, onClear, onUndo, drawingHistory, currentSegm
                 value={selectedColor}
                 onChange={(e) => {
                   setSelectedColor(e.target.value);
-                  // Only switch to brush if eraser is currently selected
-                  if (selectedTool === DRAWING_TOOLS.ERASER) {
+                  // Switch to pencil if eraser or bucket is currently selected
+                  if (selectedTool === DRAWING_TOOLS.ERASER || selectedTool === DRAWING_TOOLS.BUCKET) {
                     setSelectedTool(DRAWING_TOOLS.PENCIL);
                   }
                 }}

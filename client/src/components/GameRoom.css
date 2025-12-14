@@ -76,9 +76,23 @@
   background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
   border-radius: 10px;
   border: 2px solid #FFD700;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+}
+
+/* Position word hint responsively */
+@media (min-width: 768px) {
+  .word-hint {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 767px) {
+  .word-hint {
+    order: 3;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .start-game-btn {
