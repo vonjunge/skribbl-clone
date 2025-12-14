@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { socketService } from './services/socket';
 import Lobby from './components/Lobby';
 import GameRoom from './components/GameRoom';
@@ -64,23 +65,49 @@ function App() {
     socketService.emit(SOCKET_EVENTS.JOIN_ROOM, { roomId, playerName });
   };
 
-  return (
-    <div className="app">
-      {!roomId ? (
-        <Lobby
-          onCreateRoom={handleCreateRoom}
-          onJoinRoom={handleJoinRoom}
-          error={error}
-        />
-      ) : (
+  // If in a room, show game room regardless of route
+  if (roomId) {
+    return (
+      <div className="app">
         <GameRoom
           roomId={roomId}
           currentPlayer={currentPlayer}
           isHost={isHost}
           initialGameState={gameState}
         />
-      )}
-    </div>
+      </div>
+    );
+  }
+
+  // Otherwise show routing
+  return (
+    <Router>
+      <div className="app">
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              <Lobby
+                mode="join"
+                onJoinRoom={handleJoinRoom}
+                error={error}
+              />
+            } 
+          />
+          <Route 
+            path="/manager" 
+            element={
+              <Lobby
+                mode="create"
+                onCreateRoom={handleCreateRoom}
+                error={error}
+              />
+            } 
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

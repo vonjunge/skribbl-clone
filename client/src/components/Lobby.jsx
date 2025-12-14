@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import './Lobby.css';
 
-function Lobby({ onCreateRoom, onJoinRoom, error }) {
+function Lobby({ mode = 'join', onCreateRoom, onJoinRoom, error }) {
   const [playerName, setPlayerName] = useState('');
   const [roomIdInput, setRoomIdInput] = useState('');
-  const [mode, setMode] = useState('create'); // 'create' or 'join'
   const [roundTime, setRoundTime] = useState(80); // seconds
   const [totalRounds, setTotalRounds] = useState(3); // total number of turns
   const [validationError, setValidationError] = useState('');
+
+  const isCreateMode = mode === 'create';
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,7 +18,7 @@ function Lobby({ onCreateRoom, onJoinRoom, error }) {
       return;
     }
 
-    if (mode === 'create') {
+    if (isCreateMode) {
       setValidationError('');
       onCreateRoom(playerName.trim(), roundTime, totalRounds);
     } else {
@@ -44,22 +45,9 @@ function Lobby({ onCreateRoom, onJoinRoom, error }) {
     <div className="lobby">
       <div className="lobby-card fade-in">
         <h1 className="lobby-title">🎄 Sketchy Christmas 🎄</h1>
-        <p className="lobby-subtitle">🎅 Draw, Guess, and Spread Holiday Cheer! ⛄</p>
-
-        <div className="mode-selector">
-          <button
-            className={`mode-btn ${mode === 'create' ? 'active' : ''}`}
-            onClick={() => { setMode('create'); setValidationError(''); }}
-          >
-            Create Room
-          </button>
-          <button
-            className={`mode-btn ${mode === 'join' ? 'active' : ''}`}
-            onClick={() => { setMode('join'); setValidationError(''); }}
-          >
-            Join Room
-          </button>
-        </div>
+        <p className="lobby-subtitle">
+          {isCreateMode ? '🎅 Create a Game Room 🎅' : '⛄ Join a Game Room ⛄'}
+        </p>
 
         <form onSubmit={handleSubmit} className="lobby-form">
           <div className="form-group">
@@ -75,7 +63,7 @@ function Lobby({ onCreateRoom, onJoinRoom, error }) {
             />
           </div>
 
-          {mode === 'join' && (
+          {!isCreateMode && (
             <div className="form-group">
               <label htmlFor="roomId">Room Code</label>
               <input
@@ -90,7 +78,7 @@ function Lobby({ onCreateRoom, onJoinRoom, error }) {
             </div>
           )}
 
-          {mode === 'create' && (
+          {isCreateMode && (
             <>
               <div className="form-group">
                 <label htmlFor="roundTime">Round Time: {roundTime} seconds</label>
@@ -137,7 +125,7 @@ function Lobby({ onCreateRoom, onJoinRoom, error }) {
           )}
 
           <button type="submit" className="submit-btn">
-            {mode === 'create' ? 'Create Room' : 'Join Room'}
+            {isCreateMode ? 'Create Room' : 'Join Room'}
           </button>
         </form>
       </div>
