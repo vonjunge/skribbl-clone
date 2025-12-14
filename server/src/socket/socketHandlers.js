@@ -124,7 +124,7 @@ export function setupSocketHandlers(io, roomManager) {
 
       if (!currentRoom.canStartGame()) {
         socket.emit(SOCKET_EVENTS.ROOM_ERROR, {
-          error: `Need at least ${GAME_CONFIG.MIN_PLAYERS} players to start`
+          error: `Need at least ${GAME_CONFIG.MIN_PLAYERS + 1} players to start (host + ${GAME_CONFIG.MIN_PLAYERS} players)`
         });
         return;
       }

@@ -38,8 +38,8 @@ export class GameRoom {
     this.players.set(socketId, player);
     this.playerOrder.push(socketId);
 
-    // If game is in progress, add to available drawers pool
-    if (this.state !== GAME_STATES.WAITING) {
+    // If game is in progress, add to available drawers pool (unless they're the host)
+    if (this.state !== GAME_STATES.WAITING && socketId !== this.hostId) {
       this.availableDrawers.push(socketId);
     }
 
@@ -84,7 +84,8 @@ export class GameRoom {
   }
 
   canStartGame() {
-    return this.players.size >= GAME_CONFIG.MIN_PLAYERS && this.state === GAME_STATES.WAITING;
+    // Need minimum players + 1 (since host doesn't play/draw)
+    return this.players.size >= GAME_CONFIG.MIN_PLAYERS + 1 && this.state === GAME_STATES.WAITING;
   }
 
   startGame() {
@@ -95,7 +96,8 @@ export class GameRoom {
     this.state = GAME_STATES.CHOOSING_WORD;
     this.currentRound = 1;
     this.currentTurn = 0;
-    this.availableDrawers = [...this.playerOrder]; // Initialize with all players
+    // Exclude host from drawing - host is observer/moderator
+    this.availableDrawers = this.playerOrder.filter(socketId => socketId !== this.hostId);
     this.resetScores();
     this.startNewTurn();
     return true;
@@ -111,9 +113,9 @@ export class GameRoom {
       player.hasGuessed = false;
     });
 
-    // If all players have drawn, refresh the available drawers pool
+    // If all players have drawn, refresh the available drawers pool (excluding host)
     if (this.availableDrawers.length === 0) {
-      this.availableDrawers = [...this.playerOrder];
+      this.availableDrawers = this.playerOrder.filter(socketId => socketId !== this.hostId);
     }
 
     // Randomly select next drawer from available players
@@ -260,8 +262,9 @@ export class GameRoom {
     
     player.score += points;
 
-    // Check if all players have guessed
-    const shouldEndRound = this.playersWhoGuessed.size >= (this.players.size - 1);
+    // Check if all players have guessed (excluding drawer and host)
+    const eligibleGuessers = this.players.size - 2; // Exclude drawer and host
+    const shouldEndRound = this.playersWhoGuessed.size >= eligibleGuessers;
 
     return {
       type: 'correct',
