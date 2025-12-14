@@ -39,7 +39,7 @@ jobs:
           file: ./client/Dockerfile
           push: true
           build-args: |
-            VITE_SERVER_URL=https://game2.dejongs.de
+            VITE_SERVER_URL=https://game2srv.dejongs.de
           tags: |
             ghcr.io/${{ github.repository_owner }}/skribbl-client:latest
             ghcr.io/${{ github.repository_owner }}/skribbl-client:${{ github.sha }}
